@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://cfkcmhxe5fmai"]
+
+[ext_resource type="Script" uid="uid://clqhupddjdg2y" path="res://scripts/loading_screen.gd" id="1_ep5rh"]
+
+[sub_resource type="SystemFont" id="SystemFont_hprjd"]
+
+[node name="LoadingScreen" type="Control" unique_id=110413046]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ep5rh")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1616824572]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.14509805, 0.14509805, 0.14901961, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1985267188]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LogoLabel" type="Label" parent="VBoxContainer" unique_id=616708789]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "WORDLE
+CLONE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="VBoxContainer" unique_id=618746320]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_hprjd")
+theme_override_font_sizes/font_size = 20
+text = "
+
+
+
+Yükleniyor
+..."
+horizontal_alignment = 1
+vertical_alignment = 2

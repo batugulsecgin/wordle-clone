@@ -1,0 +1,122 @@
+[gd_scene format=3 uid="uid://e7spwa80k5d6"]
+
+[ext_resource type="Script" uid="uid://bdoyu7xgtgg6b" path="res://scripts/main.gd" id="1_o5qli"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o5qli"]
+bg_color = Color(0.1749846, 0.17498463, 0.17498448, 1)
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[node name="Main" type="Control" unique_id=1164522084]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o5qli")
+
+[node name="Board" type="GridContainer" parent="." unique_id=2120616699]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -137.0
+offset_right = 20.0
+offset_bottom = -97.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 5
+
+[node name="GameOverPanel" type="Panel" parent="." unique_id=1196662775]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -235.0
+offset_right = 200.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o5qli")
+
+[node name="TitleLabel" type="Label" parent="GameOverPanel" unique_id=189170019]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.5
+offset_top = -95.0
+offset_right = 88.5
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="WordLabel" type="Label" parent="GameOverPanel" unique_id=1161431674]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = 5.0
+offset_right = 40.0
+offset_bottom = 28.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="StatsLabel" type="Label" parent="GameOverPanel" unique_id=1367806634]
+layout_mode = 0
+offset_left = 88.0
+offset_top = 190.0
+offset_right = 128.0
+offset_bottom = 216.0
+theme_override_font_sizes/font_size = 14
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="GameOverPanel" unique_id=2029675144]
+layout_mode = 1
+offset_left = 54.0
+offset_top = 249.0
+offset_right = 354.0
+offset_bottom = 299.0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="RestartButton" type="Button" parent="GameOverPanel/ButtonContainer" unique_id=575958791]
+layout_mode = 2
+text = "tekrar oyna
+"
+
+[node name="ArchiveButton" type="Button" parent="GameOverPanel/ButtonContainer" unique_id=560789863]
+layout_mode = 2
+text = "arşive dön"
+
+[node name="KeyboardContainer" type="VBoxContainer" parent="." unique_id=733707279]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -309.0
+offset_bottom = -56.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 10
+alignment = 1

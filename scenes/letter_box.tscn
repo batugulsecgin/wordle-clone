@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dxs1huc221f5m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_emhxu"]
+bg_color = Color(0.13333334, 0.13333334, 0.13333334, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.45956573, 0.45956573, 0.45956573, 1)
+
+[node name="LetterBox" type="Label" unique_id=871548193]
+custom_minimum_size = Vector2(80, 80)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -460.0
+offset_bottom = -880.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_emhxu")
+text = "A"
+horizontal_alignment = 1
+vertical_alignment = 1
