@@ -6,15 +6,20 @@ var valid_words: Array = []
 const MAX_GUESSES = 6
 const WORD_LENGTH = 5
 
+# --- PROFESYONEL RENK PALETİ (DARK MODE) ---
+const COLOR_EMPTY_BOX = Color("#121213")
+const COLOR_BOX_BORDER = Color("#3a3a3c")
+const COLOR_KEY_DEFAULT = Color("#818384")
+const COLOR_GREEN = Color("#538d4e")
+const COLOR_YELLOW = Color("#b59f3b")
+const COLOR_WRONG = Color("#3a3a3c")
+
 @onready var board = $Board
 @onready var game_over_panel = $GameOverPanel
 @onready var title_label = $GameOverPanel/TitleLabel
 @onready var word_label = $GameOverPanel/WordLabel
-
-# --- GÜNCELLENEN: YENİ BUTON YOLLARI ---
 @onready var restart_button = $GameOverPanel/ButtonContainer/RestartButton
 @onready var archive_button = $GameOverPanel/ButtonContainer/ArchiveButton
-
 @onready var keyboard_container = $KeyboardContainer
 @onready var stats_label = $GameOverPanel/StatsLabel
 
@@ -46,7 +51,6 @@ func _ready():
 	if not restart_button.pressed.is_connected(restart_game):
 		restart_button.pressed.connect(restart_game)
 		
-	# --- YENİ EKLENEN: ARŞİVE DÖN BUTONU BAĞLANTISI ---
 	if not archive_button.pressed.is_connected(return_to_archive):
 		archive_button.pressed.connect(return_to_archive)
 
@@ -83,8 +87,7 @@ func load_words():
 				level_day_index = int((unix_time + tz_bias) / 86400.0)
 			
 			target_word = answers[level_day_index % answers.size()]
-			print("OYUN BAŞLADI - Gün: ", level_day_index, " | Kelime: ", target_word)
-	
+			
 	var guesses_path = "res://data/guesses.json"
 	if FileAccess.file_exists(guesses_path):
 		var json_string = FileAccess.get_file_as_string(guesses_path)
@@ -100,6 +103,15 @@ func create_board():
 		box.text = ""
 		box.pivot_offset = Vector2(40, 40) 
 		grid_boxes.append(box)
+		
+		var style = StyleBoxFlat.new()
+		style.bg_color = COLOR_EMPTY_BOX
+		style.border_width_left = 2
+		style.border_width_right = 2
+		style.border_width_top = 2
+		style.border_width_bottom = 2
+		style.border_color = COLOR_BOX_BORDER
+		box.add_theme_stylebox_override("normal", style)
 
 func create_keyboard():
 	for row in keyboard_layout:
@@ -121,7 +133,7 @@ func create_keyboard():
 				key_buttons[key] = btn 
 			
 			var style = StyleBoxFlat.new()
-			style.bg_color = Color(0.5, 0.5, 0.53) 
+			style.bg_color = COLOR_KEY_DEFAULT 
 			style.corner_radius_top_left = 5
 			style.corner_radius_top_right = 5
 			style.corner_radius_bottom_left = 5
@@ -133,22 +145,15 @@ func create_keyboard():
 
 func _on_virtual_key_pressed(key: String):
 	if game_over_panel.visible or current_row >= MAX_GUESSES or is_animating: return
-	
-	if key == "ENTER":
-		submit_guess()
-	elif key == "SİL":
-		remove_letter()
-	else:
-		add_letter(key)
+	if key == "ENTER": submit_guess()
+	elif key == "SİL": remove_letter()
+	else: add_letter(key)
 
 func _unhandled_input(event):
 	if game_over_panel.visible or current_row >= MAX_GUESSES or is_animating: return
-	
 	if event is InputEventKey and event.pressed:
-		if event.keycode == KEY_BACKSPACE:
-			remove_letter()
-		elif event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER:
-			submit_guess()
+		if event.keycode == KEY_BACKSPACE: remove_letter()
+		elif event.keycode == KEY_ENTER or event.keycode == KEY_KP_ENTER: submit_guess()
 		elif event.unicode != 0: 
 			var typed_char = turkish_to_upper(char(event.unicode))
 			var turkish_alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ"
@@ -160,9 +165,14 @@ func add_letter(letter: String):
 		var box = grid_boxes[current_row * WORD_LENGTH + current_col]
 		current_guess += letter
 		update_grid()
+		
+		var style = box.get_theme_stylebox("normal").duplicate()
+		style.border_color = COLOR_KEY_DEFAULT
+		box.add_theme_stylebox_override("normal", style)
+		
 		var pop_tween = create_tween()
-		pop_tween.tween_property(box, "scale", Vector2(1.1, 1.1), 0.15)
-		pop_tween.tween_property(box, "scale", Vector2(1.0, 1.0), 0.15)
+		pop_tween.tween_property(box, "scale", Vector2(1.1, 1.1), 0.1)
+		pop_tween.tween_property(box, "scale", Vector2(1.0, 1.0), 0.1)
 		current_col += 1
 
 func remove_letter():
@@ -170,6 +180,11 @@ func remove_letter():
 		current_col -= 1
 		current_guess = current_guess.substr(0, current_guess.length() - 1)
 		update_grid()
+		
+		var box = grid_boxes[current_row * WORD_LENGTH + current_col]
+		var style = box.get_theme_stylebox("normal").duplicate()
+		style.border_color = COLOR_BOX_BORDER
+		box.add_theme_stylebox_override("normal", style)
 
 func update_grid():
 	var start_index = current_row * WORD_LENGTH
@@ -196,9 +211,8 @@ func shake_error(should_clear: bool):
 	shake_tween.tween_property(board, "position:x", board_start_pos.x, time)
 	if should_clear:
 		shake_tween.tween_callback(func():
-			current_col = 0
-			current_guess = ""
-			update_grid()
+			for i in range(current_guess.length()):
+				remove_letter()
 		)
 
 func submit_guess():
@@ -216,44 +230,56 @@ func check_guess():
 	var remaining_letters = []
 	for i in range(WORD_LENGTH):
 		remaining_letters.append(target_word[i])
+		
 	var box_colors = []
 	box_colors.resize(WORD_LENGTH)
-	box_colors.fill(Color(0.23, 0.23, 0.24))
+	box_colors.fill(COLOR_WRONG)
+
 	for i in range(WORD_LENGTH):
 		if current_guess[i] == target_word[i]:
-			box_colors[i] = Color(0.33, 0.55, 0.35)
+			box_colors[i] = COLOR_GREEN
 			remaining_letters[i] = "."
+
 	for i in range(WORD_LENGTH):
-		if box_colors[i] == Color(0.33, 0.55, 0.35):
-			continue
+		if box_colors[i] == COLOR_GREEN: continue
 		var letter = current_guess[i]
 		var found_index = remaining_letters.find(letter)
 		if found_index != -1:
-			box_colors[i] = Color(0.71, 0.61, 0.23)
+			box_colors[i] = COLOR_YELLOW
 			remaining_letters[found_index] = "."
+
 	var tween = create_tween()
 	tween.set_parallel(true) 
 	var final_time = 0.0
+
 	for i in range(WORD_LENGTH):
 		var box = grid_boxes[start_index + i]
 		var letter = current_guess[i]
 		var final_color = box_colors[i]
 		var delay = i * 0.2 
+		
 		tween.tween_property(box, "scale:y", 0.0, 0.15).set_delay(delay)
 		tween.tween_callback(apply_color.bind(box, final_color, letter)).set_delay(delay + 0.15)
 		tween.tween_property(box, "scale:y", 1.0, 0.15).set_delay(delay + 0.15)
 		final_time = delay + 0.3
+
 	tween.tween_callback(finish_submit).set_delay(final_time)
 
 func apply_color(box: Control, new_color: Color, letter: String):
 	var style = StyleBoxFlat.new()
 	style.bg_color = new_color
+	style.border_width_left = 0
+	style.border_width_right = 0
+	style.border_width_top = 0
+	style.border_width_bottom = 0
 	box.add_theme_stylebox_override("normal", style)
+	
 	var btn = key_buttons[letter]
 	var btn_style = btn.get_theme_stylebox("normal") as StyleBoxFlat
 	var current_color = btn_style.bg_color
-	if current_color == Color(0.33, 0.55, 0.35): return
-	if current_color == Color(0.71, 0.61, 0.23) and new_color != Color(0.33, 0.55, 0.35): return
+	
+	if current_color == COLOR_GREEN: return
+	if current_color == COLOR_YELLOW and new_color != COLOR_GREEN: return
 	btn_style.bg_color = new_color
 
 func finish_submit():
@@ -264,13 +290,11 @@ func finish_submit():
 	current_row += 1
 	current_col = 0
 	current_guess = ""
-	if current_row >= MAX_GUESSES:
-		show_game_over(false)
+	if current_row >= MAX_GUESSES: show_game_over(false)
 	is_animating = false 
 
 func show_game_over(has_won: bool):
 	SaveManager.stats["games_played"] += 1
-	
 	var day_key = str(level_day_index)
 	
 	if has_won:
@@ -279,19 +303,17 @@ func show_game_over(has_won: bool):
 		if SaveManager.stats["current_streak"] > SaveManager.stats["max_streak"]:
 			SaveManager.stats["max_streak"] = SaveManager.stats["current_streak"]
 		SaveManager.stats["guess_distribution"][current_row] += 1
-		
 		SaveManager.stats["history"][day_key] = "WIN"
 		
 		title_label.text = "TEBRİKLER!"
-		title_label.modulate = Color(0.33, 0.55, 0.35)
+		title_label.modulate = COLOR_GREEN
 	else:
 		SaveManager.stats["current_streak"] = 0 
-		
 		if not SaveManager.stats["history"].has(day_key):
 			SaveManager.stats["history"][day_key] = "LOSS"
 			
 		title_label.text = "BİLEMEDİNİZ!"
-		title_label.modulate = Color(0.8, 0.2, 0.2)
+		title_label.modulate = Color("#e05a5a") 
 	
 	SaveManager.save_game()
 	
@@ -307,6 +329,5 @@ func show_game_over(has_won: bool):
 func restart_game():
 	get_tree().reload_current_scene()
 
-# --- YENİ EKLENEN: ARŞİVE DÖN FONKSİYONU ---
 func return_to_archive():
 	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

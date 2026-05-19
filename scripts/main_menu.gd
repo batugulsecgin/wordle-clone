@@ -30,7 +30,7 @@ func generate_levels():
 		btn.text = display_text
 		
 		var style = StyleBoxFlat.new()
-		style.bg_color = Color(0.2, 0.2, 0.23)
+		style.bg_color = Color("#3a3a3c")
 		style.corner_radius_top_left = 10
 		style.corner_radius_top_right = 10
 		style.corner_radius_bottom_left = 10
