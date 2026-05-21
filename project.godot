@@ -24,6 +24,7 @@ SaveManager="*uid://6i23b56n0cua"
 window/size/viewport_width=540
 window/size/viewport_height=960
 window/stretch/mode="canvas_items"
+window/handheld/orientation=1
 
 [physics]
 
@@ -33,3 +34,4 @@ window/stretch/mode="canvas_items"
 
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
