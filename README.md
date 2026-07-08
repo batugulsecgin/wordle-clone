@@ -1,1 +1,1 @@
-![Görüntülenme Sayısı](https://komarev.com/ghpvc/?username=batugulsecgin&color=blue)
+![Proje Görüntülenmesi](https://komarev.com/ghpvc/?username=batugulsecgin-wordle-clone&color=blue)
